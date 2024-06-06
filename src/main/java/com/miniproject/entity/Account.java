@@ -1,0 +1,26 @@
+package com.miniproject.entity;
+
+import com.miniproject.constant.AccountType;
+import com.miniproject.constant.ConstantTable;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Entity
+@Table(name = ConstantTable.ACCOUNT)
+public class Account {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+    @ManyToOne
+    @JoinColumn(name = "customer_id",nullable = false)
+    private Customer customer;
+    @Column(name = "balance")
+    private Long balance;
+    @Enumerated(EnumType.STRING)
+    private AccountType accountType;
+}
