@@ -16,8 +16,8 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    @ManyToOne
-    @JoinColumn(name = "customer_id",nullable = false)
+    @OneToOne
+    @JoinColumn(name = "customer_id")
     private Customer customer;
     @Column(name = "balance")
     private Long balance;

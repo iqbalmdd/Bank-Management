@@ -21,6 +21,7 @@ public class Customer {
     private String email;
     @Column(name = "phone_no",nullable = false)
     private String phoneNo;
-    @Column(name = "is_member",nullable = false)
+    @Column(name = "is_active",nullable = false)
     private Boolean isActive;
+
 }
