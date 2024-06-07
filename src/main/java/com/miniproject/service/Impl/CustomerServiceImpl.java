@@ -7,9 +7,12 @@ import com.miniproject.entity.Customer;
 import com.miniproject.repository.AccountRepository;
 import com.miniproject.repository.CustomerRepository;
 import com.miniproject.service.CustomerService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -19,6 +22,7 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final AccountRepository accountRepository;
+    private final EntityManager entityManager;
     @Override
     public Customer create(CustomerRequest customerRequest) {
         Customer customer = Customer.builder()
@@ -48,9 +52,18 @@ public class CustomerServiceImpl implements CustomerService {
         return findByIdOrThrow(id);
     }
 
+    // Native Query
     @Override
-    public List<Customer> getAll(CustomerRequest customerRequest) {
-        return List.of();
+    @Transactional(readOnly = true)
+    public List<Customer> getAllNameLike (String nameRequest) {
+        if (nameRequest == null){
+            return customerRepository.findAll();
+        } else {
+            String sql = "SELECT * FROM m_customer WHERE name LIKE :nameRequest";
+            Query query = entityManager.createNativeQuery(sql, Customer.class);
+            query.setParameter("nameRequest", "%" + nameRequest + "%");
+            return query.getResultList();
+        }
     }
 
     @Override
@@ -59,6 +72,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.saveAndFlush(customer); // set in properties spring.jpa.hibernate.ddl-auto=update
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateStatusById(String id, Boolean status) {
         findByIdOrThrow(id);

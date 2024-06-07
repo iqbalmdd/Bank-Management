@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = APIUrl.CUSTOMER_API)
@@ -40,6 +42,17 @@ public class CustomerController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping
+    public ResponseEntity<CommonResponse<List<Customer>>> SearchCustomer (@RequestParam(name = "name", required = false) String nameLike){
+        List<Customer> customer = customerService.getAllNameLike(nameLike);
+        CommonResponse<List<Customer>> response = CommonResponse.<List<Customer>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Success Get Data")
+                .data(customer)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     @PutMapping
     public ResponseEntity<CommonResponse<Customer>> updateCustomer (@RequestBody Customer request){
         Customer customer = customerService.update(request);
@@ -54,7 +67,7 @@ public class CustomerController {
     @PutMapping(path = APIUrl.PATH_VAR_ID)
     public ResponseEntity<CommonResponse<String>> updateCustomerStatus (
             @PathVariable String id,
-            @RequestParam(name = "status", defaultValue = "true") Boolean status){
+            @RequestParam(name = "status") Boolean status){
         customerService.updateStatusById(id,status);
         CommonResponse<String> response = CommonResponse.<String>builder()
                 .statusCode(HttpStatus.OK.value())
