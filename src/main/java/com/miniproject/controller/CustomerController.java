@@ -43,12 +43,22 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<CommonResponse<List<Customer>>> SearchCustomer (@RequestParam(name = "name", required = false) String nameLike){
-        List<Customer> customer = customerService.getAllNameLike(nameLike);
+    public ResponseEntity<CommonResponse<List<Customer>>> SearchCustomer (
+            @RequestParam(name = "name", required = false) String nameLike,
+            @RequestParam(name = "email", required = false) String emailLike,
+            @RequestParam(name = "isActive", required = false) Boolean isActive
+            ){
+        Customer customer = Customer.builder()
+                .name(nameLike)
+                .email(emailLike)
+                .isActive(isActive)
+                .build();
+        List<Customer> customerList = customerService.getAll(customer);
+
         CommonResponse<List<Customer>> response = CommonResponse.<List<Customer>>builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("Success Get Data")
-                .data(customer)
+                .data(customerList)
                 .build();
         return ResponseEntity.ok(response);
     }

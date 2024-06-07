@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -55,15 +56,36 @@ public class CustomerServiceImpl implements CustomerService {
     // Native Query
     @Override
     @Transactional(readOnly = true)
-    public List<Customer> getAllNameLike (String nameRequest) {
-        if (nameRequest == null){
+    public List<Customer> getAll (Customer customer) {
+        if (customer == null) {
             return customerRepository.findAll();
-        } else {
-            String sql = "SELECT * FROM m_customer WHERE name LIKE :nameRequest";
-            Query query = entityManager.createNativeQuery(sql, Customer.class);
-            query.setParameter("nameRequest", "%" + nameRequest + "%");
-            return query.getResultList();
         }
+
+        StringBuilder sql = new StringBuilder("SELECT * FROM m_customer WHERE 1=1");
+        List<Object> parameters = new ArrayList<>();
+
+        if (customer.getName() != null) {
+            sql.append(" AND name LIKE ?");
+            parameters.add("%" + customer.getName() + "%");
+        }
+
+        if (customer.getEmail() != null) {
+            sql.append(" AND email LIKE ?");
+            parameters.add("%" + customer.getEmail() + "%");
+        }
+
+        if (customer.getIsActive() != null) {
+            sql.append(" AND is_active = ?");
+            parameters.add(customer.getIsActive());
+        }
+
+        Query query = entityManager.createNativeQuery(sql.toString(), Customer.class);
+
+        for (int i = 0; i < parameters.size(); i++) {
+            query.setParameter(i + 1, parameters.get(i));
+        }
+
+        return query.getResultList();
     }
 
     @Override

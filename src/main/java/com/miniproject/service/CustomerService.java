@@ -10,7 +10,8 @@ import java.util.List;
 public interface CustomerService {
     Customer create(CustomerRequest customerRequest);
     Customer getById(String id);
-    List<Customer> getAllNameLike (String name);
+    List<Customer> getAll (Customer customer);
+//    List<Customer> getActiveCustomer (String name);
     Customer update (Customer customer);
     void updateStatusById (String id, Boolean status);
 
