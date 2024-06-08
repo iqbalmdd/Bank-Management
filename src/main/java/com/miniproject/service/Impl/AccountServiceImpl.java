@@ -55,4 +55,10 @@ public class AccountServiceImpl implements AccountService {
         account.setAccountType(AccountType.valueOf(accountRequest.getAccountType()));
         return accountRepository.saveAndFlush(account);
     }
+
+    @Override
+    public Account updateBalance(Account account) {
+        getById(account.getId());
+        return accountRepository.saveAndFlush(account);
+    }
 }

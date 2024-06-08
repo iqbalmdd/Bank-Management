@@ -19,7 +19,7 @@ public class Account {
     @OneToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
-    @Column(name = "balance")
+    @Column(name = "balance", columnDefinition = "BIGINT CHECK (balance >= 0)")
     private Long balance;
     @Enumerated(EnumType.STRING)
     private AccountType accountType;

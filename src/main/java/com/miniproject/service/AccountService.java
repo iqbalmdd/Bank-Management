@@ -11,4 +11,5 @@ public interface AccountService {
     Account getById (String id);
     List<AccountResponse> getAll(AccountRequest accountRequest);
     Account updateAccountType (AccountRequest accountRequest);
+    Account updateBalance (Account account);
 }
