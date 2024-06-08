@@ -11,6 +11,7 @@ import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -20,11 +21,13 @@ import java.util.List;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final EntityManager entityManager;
+
+    @Transactional(readOnly = true)
     @Override
     public Account getById(String id) {
         return accountRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Account Not Found"));
     }
-
+    @Transactional(readOnly = true)
     @Override
     public List<AccountResponse> getAll(AccountRequest request) {
 
@@ -49,6 +52,7 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Account updateAccountType(AccountRequest accountRequest) {
         Account account = getById(accountRequest.getId());
@@ -56,6 +60,7 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.saveAndFlush(account);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Account updateBalance(Account account) {
         getById(account.getId());

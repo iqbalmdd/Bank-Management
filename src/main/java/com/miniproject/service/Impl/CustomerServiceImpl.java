@@ -24,6 +24,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final AccountRepository accountRepository;
     private final EntityManager entityManager;
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Customer create(CustomerRequest customerRequest) {
         Customer customer = Customer.builder()
@@ -47,7 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer findByIdOrThrow (String id){
         return customerRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer Not Found"));
     }
-
+    @Transactional(readOnly = true)
     @Override
     public Customer getById(String id) {
         return findByIdOrThrow(id);
@@ -87,7 +88,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         return query.getResultList();
     }
-
+    @Transactional(readOnly = true)
     @Override
     public Customer update(Customer customer) {
         getById(customer.getId());

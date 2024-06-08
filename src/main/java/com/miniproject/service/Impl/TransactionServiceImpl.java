@@ -59,6 +59,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<TransactionResponse> getAll(SearchTransactionRequest searchTransactionRequest) {
         // Filter Check
