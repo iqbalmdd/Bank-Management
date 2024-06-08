@@ -29,14 +29,17 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionResponse create(TransactionRequest transactionRequest) {
         // Set Amount After Transaction
         Account account = accountService.getById(transactionRequest.getAccountId());
-
-        if (transactionRequest.getTransactionType() == TransactionType.DEPOSIT.toString()){
+        if (transactionRequest.getTransactionType().equals(TransactionType.DEPOSIT.toString()) ){
             account.setBalance(account.getBalance() + transactionRequest.getAmount());
             accountService.updateBalance(account);
-        } else if (transactionRequest.getTransactionType() == TransactionType.WITHDRAWAL.toString() ||
-                transactionRequest.getTransactionType() == TransactionType.PAYMENT.toString()) {
+        } else if (transactionRequest.getTransactionType().equals(TransactionType.WITHDRAWAL.toString()) ||
+                transactionRequest.getTransactionType().equals(TransactionType.PAYMENT.toString())) {
             account.setBalance(account.getBalance() - transactionRequest.getAmount());
             accountService.updateBalance(account);
+        }
+        // Check Balance >= 0
+        if (account.getBalance() < 0){
+            throw new IllegalArgumentException("Insufficient balance");
         }
 
         // Save Transaction to Database
