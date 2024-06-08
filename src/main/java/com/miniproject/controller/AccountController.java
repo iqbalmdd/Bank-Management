@@ -1,13 +1,10 @@
 package com.miniproject.controller;
 
 import com.miniproject.constant.APIUrl;
-import com.miniproject.constant.AccountType;
-import com.miniproject.dto.request.AccountTypeRequest;
-import com.miniproject.dto.request.SearchAccountRequest;
+import com.miniproject.dto.request.AccountRequest;
 import com.miniproject.dto.response.AccountResponse;
 import com.miniproject.dto.response.CommonResponse;
 import com.miniproject.entity.Account;
-import com.miniproject.entity.Customer;
 import com.miniproject.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,7 +36,7 @@ public class AccountController {
              @RequestParam(name = "accountType",required = false) String accountType
             ){
 
-        SearchAccountRequest request = SearchAccountRequest.builder()
+        AccountRequest request = AccountRequest.builder()
                 .id(id)
                 .accountType(accountType)
                 .build();
@@ -54,12 +51,12 @@ public class AccountController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping(path = APIUrl.PATH_VAR_ID)
+    @PutMapping
     public ResponseEntity<CommonResponse<Account>> updateAccType (
-            @PathVariable String id,
-            @RequestParam(name = "accountType") String accountType
+            @RequestParam(name = "id", required = true) String id,
+            @RequestParam(name = "accountType", required = true) String accountType
     ){
-        AccountTypeRequest request = AccountTypeRequest.builder()
+        AccountRequest request = AccountRequest.builder()
                 .id(id)
                 .accountType(accountType)
                 .build();

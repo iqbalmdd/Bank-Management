@@ -1,8 +1,7 @@
 package com.miniproject.service.Impl;
 
 import com.miniproject.constant.AccountType;
-import com.miniproject.dto.request.AccountTypeRequest;
-import com.miniproject.dto.request.SearchAccountRequest;
+import com.miniproject.dto.request.AccountRequest;
 import com.miniproject.dto.response.AccountResponse;
 import com.miniproject.entity.Account;
 import com.miniproject.repository.AccountRepository;
@@ -27,12 +26,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<AccountResponse> getAll(SearchAccountRequest request) {
+    public List<AccountResponse> getAll(AccountRequest request) {
 
         if (request.getAccountType() != null){
-            String sql = "SELECT * FROM m_account WHERE account_type :accountType";
+            String sql = "SELECT * FROM m_account WHERE account_type = ?1";
             Query query = entityManager.createNativeQuery(sql, Account.class);
-            query.setParameter("accountType", request.getAccountType());
+            query.setParameter(1, request.getAccountType());
             List<AccountResponse> queryResultList = query.getResultList();
             return queryResultList;
         } else {
@@ -48,15 +47,12 @@ public class AccountServiceImpl implements AccountService {
             ).toList();
             return allAccount;
         }
-
-
-
     }
 
     @Override
-    public Account updateAccountType(AccountTypeRequest accountTypeRequest) {
-        Account account = getById(accountTypeRequest.getId());
-        account.setAccountType(AccountType.valueOf(accountTypeRequest.getAccountType()));
-        return account;
+    public Account updateAccountType(AccountRequest accountRequest) {
+        Account account = getById(accountRequest.getId());
+        account.setAccountType(AccountType.valueOf(accountRequest.getAccountType()));
+        return accountRepository.saveAndFlush(account);
     }
 }

@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AccountTypeRequest {
+public class AccountRequest {
     private String id;
     @Pattern(regexp = "^(REGULAR|PRIORITY|PREMIUM)$", message = "Nilai harus REGULAR, PRIORITY, atau PREMIUM")
     private String accountType;
